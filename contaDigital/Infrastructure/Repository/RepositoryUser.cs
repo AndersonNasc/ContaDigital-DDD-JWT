@@ -7,6 +7,7 @@ using Microsoft.Extensions.Options;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Numerics;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -21,9 +22,21 @@ namespace Infrastructure.Repository
             _optionsbuilder = new DbContextOptions<Context>();
         }
 
-        public Task<bool> CheckIfUserExists(string email, string password)
+        public async Task<bool> CheckIfUserExists(string email, string password)
         {
-            throw new NotImplementedException();
+            try
+            {
+                using (var data = new Context(_optionsbuilder))
+                {
+                    return await data.ApplicationUser.Where(x => x.Email.Equals(email) && x.PasswordHash.Equals(password)).AsNoTracking().AnyAsync();
+                }
+            }
+            catch (Exception ex)
+            {
+                throw;
+            }
+
+            return false;
         }
 
         public async Task<bool> SetUser(string email, string password, int Age, string phone)

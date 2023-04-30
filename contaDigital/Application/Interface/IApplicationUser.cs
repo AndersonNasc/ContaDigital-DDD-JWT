@@ -9,5 +9,7 @@ namespace Application.Interface
     public interface IApplicationUser
     {
         Task<bool> SetUser(string email, string password, int Age, string phone);
+
+        Task<bool> CheckIfUserExists(string email, string password);
     }
 }

@@ -9,11 +9,11 @@ using System.Threading.Tasks;
 
 namespace Domain.Services
 {
-    public class serviceClient : IServiceClient
+    public class ServiceClient : IServiceClient
     {
         private readonly IClient _IClient;
 
-        public serviceClient(IClient IClient)
+        public ServiceClient(IClient IClient)
         {
             _IClient = IClient;
         }
