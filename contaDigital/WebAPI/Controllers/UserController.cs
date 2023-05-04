@@ -1,5 +1,6 @@
-﻿using Application.Application;
+﻿//using Application.Application;
 using Application.Interface;
+using Entity.Enums;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
@@ -8,6 +9,7 @@ using Microsoft.AspNetCore.WebUtilities;
 using System.Text;
 using WebAPI.Models;
 using WebAPI.Token;
+using Entity.Entity;
 
 namespace WebAPI.Controllers
 {
@@ -29,18 +31,18 @@ namespace WebAPI.Controllers
 
         [AllowAnonymous]
         [Produces("application/json")]
-        [HttpPost("/api/CriarToken")]
-        public async Task<IActionResult> CriarToken([FromBody] Login login)
+        [HttpPost("/api/CreateToken")]
+        public async Task<IActionResult> CreateToken([FromBody] Login login)
         {
             if (string.IsNullOrWhiteSpace(login.email) || string.IsNullOrWhiteSpace(login.password))
                 return Unauthorized();
 
-            var resultado = await _IAplicacaoUsuario.CheckIfUserExists(login.email, login.password);
-            if (resultado)
+            var result = await _IAplicacaoUsuario.CheckIfUserExists(login.email, login.password);
+            if (result)
             {
                 var token = new TokenJWTBuilder()
-                    .AddSecurityKey(JwtSecurityKey.Create("Secret_Key-12345678"))
-                .AddSubject("Empresa - Canal Dev Net Core")
+                    .AddSecurityKey(JwtSecurityKey.Create("Secret_Key"))
+                .AddSubject("Teste")
                 .AddIssuer("Teste.Securiry.Bearer")
                 .AddAudience("Teste.Securiry.Bearer")
                 .AddClaim("UsuarioAPINumero", "1")
@@ -59,16 +61,16 @@ namespace WebAPI.Controllers
 
         [AllowAnonymous]
         [Produces("application/json")]
-        [HttpPost("/api/AdicionaUsuario")]
-        public async Task<IActionResult> AdicionaUsuario([FromBody] Login login)
+        [HttpPost("/api/SetUser")]
+        public async Task<IActionResult> SetUser([FromBody] Login login)
         {
             if (string.IsNullOrWhiteSpace(login.email) || string.IsNullOrWhiteSpace(login.password))
                 return Ok("Falta alguns dados");
 
-            var resultado = await
+            var result = await
                 _IAplicacaoUsuario.SetUser(login.email, login.password, login.age, login.phone);
 
-            if (resultado)
+            if (result)
                 return Ok("Usuário Adicionado com Sucesso");
             else
                 return Ok("Erro ao adicionar usuário");
@@ -77,24 +79,24 @@ namespace WebAPI.Controllers
 
         [AllowAnonymous]
         [Produces("application/json")]
-        [HttpPost("/api/CriarTokenIdentity")]
-        public async Task<IActionResult> CriarTokenIdentity([FromBody] Login login)
+        [HttpPost("/api/CreateTokenIdentity")]
+        public async Task<IActionResult> CreateTokenIdentity([FromBody] Login login)
         {
             if (string.IsNullOrWhiteSpace(login.email) || string.IsNullOrWhiteSpace(login.password))
                 return Unauthorized();
 
-            var resultado = await
+            var result = await
                 _signInManager.PasswordSignInAsync(login.email, login.password, false, lockoutOnFailure: false);
 
-            if (resultado.Succeeded)
+            if (result.Succeeded)
             {
                 var token = new TokenJWTBuilder()
-                     .AddSecurityKey(JwtSecurityKey.Create("Secret_Key-12345678"))
+                     .AddSecurityKey(JwtSecurityKey.Create("Secret_Key"))
                  .AddSubject("Empresa - Canal Dev Net Core")
                  .AddIssuer("Teste.Securiry.Bearer")
                  .AddAudience("Teste.Securiry.Bearer")
                  .AddClaim("UsuarioAPINumero", "1")
-                 .AddExpiry(5)
+                 .AddExpiry(5) //Minutes
                  .Builder();
 
                 return Ok(token.value);
@@ -106,42 +108,42 @@ namespace WebAPI.Controllers
 
         }
 
-        //[AllowAnonymous]
-        //[Produces("application/json")]
-        //[HttpPost("/api/AdicionaUsuarioIdentity")]
-        //public async Task<IActionResult> AdicionaUsuarioIdentity([FromBody] Login login)
-        //{
-        //    if (string.IsNullOrWhiteSpace(login.email) || string.IsNullOrWhiteSpace(login.password))
-        //        return Ok("Falta alguns dados");
+        [AllowAnonymous]
+        [Produces("application/json")]
+        [HttpPost("/api/SetUsuarioIdentity")]
+        public async Task<IActionResult> SetUsuarioIdentity([FromBody] Login login)
+        {
+            if (string.IsNullOrWhiteSpace(login.email) || string.IsNullOrWhiteSpace(login.password))
+                return Ok("Falta alguns dados");
 
-        //    var user = new ApplicationUser
-        //    {
-        //        UserName = login.email,
-        //        Email = login.email,
-        //        Celular = login.celular,
-        //        Tipo = TipoUsuario.Comum,
-        //    };
-        //    var resultado = await _userManager.CreateAsync(user, login.senha);
+            var user = new ApplicationUser
+            {
+                UserName = login.email,
+                Email = login.email,
+                Phone = login.phone,
+                Tipo = TypeUser.Comum,
+            };
+            var result = await _userManager.CreateAsync(user, login.password);
 
-        //    if (resultado.Errors.Any())
-        //    {
-        //        return Ok(resultado.Errors);
-        //    }
+            if (result.Errors.Any())
+            {
+                return Ok(result.Errors);
+            }
 
-        //    // Geração de Confirmação caso precise
-        //    var userId = await _userManager.GetUserIdAsync(user);
-        //    var code = await _userManager.GenerateEmailConfirmationTokenAsync(user);
-        //    code = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(code));
+            // Geração de Confirmação caso precise
+            var userId = await _userManager.GetUserIdAsync(user);
+            var code = await _userManager.GenerateEmailConfirmationTokenAsync(user);
+            code = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(code));
 
-        //    // retorno email 
-        //    code = Encoding.UTF8.GetString(WebEncoders.Base64UrlDecode(code));
-        //    var resultado2 = await _userManager.ConfirmEmailAsync(user, code);
+            // retorno email 
+            code = Encoding.UTF8.GetString(WebEncoders.Base64UrlDecode(code));
+            var result2 = await _userManager.ConfirmEmailAsync(user, code);
 
-        //    if (resultado2.Succeeded)
-        //        return Ok("Usuário Adicionado com Sucesso");
-        //    else
-        //        return Ok("Erro ao confirmar usuários");
+            if (result2.Succeeded)
+                return Ok("Usuário Adicionado com Sucesso");
+            else
+                return Ok("Erro ao confirmar usuários");
 
-        //}
+        }
     }
 }

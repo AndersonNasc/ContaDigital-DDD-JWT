@@ -11,9 +11,19 @@ namespace Infrastructure.Configuration
 {
     public class Context : IdentityDbContext<ApplicationUser>
     {
-        public Context(DbContextOptions<Context> options): base(options)
+        public Context()
         {
-            
+        }
+
+        public Context(DbContextOptions<Context> options): base(options)
+        {            
+        }
+
+        protected override void OnModelCreating(ModelBuilder builder)
+        {
+            builder.Entity<ApplicationUser>().ToTable("AspNetUsers").HasKey(t => t.Id);
+
+            base.OnModelCreating(builder);
         }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
@@ -25,20 +35,13 @@ namespace Infrastructure.Configuration
             }
         }
 
-        protected override void OnModelCreating(ModelBuilder builder)
-        {
-            builder.Entity<ApplicationUser>().ToTable("AspNetUsers").HasKey(t => t.Id);
-
-            base.OnModelCreating(builder);
-        }
-
         public DbSet<Client> Clients { get; set; }
         public DbSet<Account> Accounts { get; set; }
         public DbSet<ApplicationUser> ApplicationUser { get; set; }
 
         public string GetStringConn()
         {
-            return "Data Source=DESKTOP-4GIQV0F;Initial Catalog=ContaDigital;Integrated Security=True;Connect Timeout=15;Encrypt=False;TrustServerCertificate=True";
+            return "Data Source=DESKTOP-4GIQV0F;Initial Catalog=ContaDigital;Integrated Security=True;encrypt=false";
         }
 
      }
