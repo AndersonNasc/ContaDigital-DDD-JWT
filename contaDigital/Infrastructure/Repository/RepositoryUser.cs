@@ -39,6 +39,24 @@ namespace Infrastructure.Repository
             return false;
         }
 
+        public async Task<string> ReturnIdUser(string email)
+        {
+            try
+            {
+                using (var data = new Context(_optionsbuilder))
+                {
+                    var user = await data.ApplicationUser.Where(x => x.Email.Equals(email)).AsNoTracking().FirstOrDefaultAsync();
+                    return user.Id;
+                }
+            }
+            catch (Exception ex)
+            {
+                throw;
+            }
+
+            return string.Empty;
+        }
+
         public async Task<bool> SetUser(string email, string password, int Age, string phone)
         {
             try
@@ -52,6 +70,8 @@ namespace Infrastructure.Repository
                         Age = Age,
                         Phone = phone
                     });
+
+                    await data.SaveChangesAsync();
                 }
             }
             catch (Exception ex)

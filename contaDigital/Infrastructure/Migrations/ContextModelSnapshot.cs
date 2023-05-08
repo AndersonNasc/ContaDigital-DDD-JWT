@@ -70,7 +70,7 @@ namespace Infrastructure.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("TB_ACCOUNT");
+                    b.ToTable("TB_ACCOUNT", (string)null);
                 });
 
             modelBuilder.Entity("Entity.Entity.ApplicationUser", b =>
@@ -191,7 +191,7 @@ namespace Infrastructure.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("TB_CLIENT");
+                    b.ToTable("TB_CLIENT", (string)null);
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>

@@ -29,10 +29,9 @@ namespace WebAPI
         public void ConfigureServices(IServiceCollection services)
         {
 
-            services.AddDbContext<Context>(options =>
-             options.UseSqlServer(
-                 Configuration.GetConnectionString("DefaultConnection")));
-            services.AddDefaultIdentity<ApplicationUser>(options => options.SignIn.RequireConfirmedAccount = false)
+            services.AddDbContext<Context>(options => options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
+
+            services.AddDefaultIdentity<Entity.Entity.ApplicationUser>(options => options.SignIn.RequireConfirmedAccount = false)
                 .AddEntityFrameworkStores<Context>();
 
             // INTERFACE E REPOSITORIO
@@ -48,6 +47,7 @@ namespace WebAPI
             // INTERFACE APLICAÇÃO
             services.AddSingleton<IApplicationClient, ApplicationClient>();
             services.AddSingleton<IApplicationAccount, ApplicationAccount>();
+            services.AddSingleton<IApplicationUser, ApplicationUser>();
 
             services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
            .AddJwtBearer(option =>

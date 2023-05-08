@@ -11,5 +11,7 @@ namespace Application.Interface
         Task<bool> SetUser(string email, string password, int Age, string phone);
 
         Task<bool> CheckIfUserExists(string email, string password);
+
+        Task<string> ReturnIdUser(string email);
     }
 }

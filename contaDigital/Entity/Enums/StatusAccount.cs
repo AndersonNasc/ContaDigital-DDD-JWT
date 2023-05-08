@@ -8,8 +8,8 @@ namespace Entity.Enums
 {
     public enum StatusAccount
     {
-        Ativa,
-        Inativa,
-        Fechada
+        Ativa = 1,
+        Inativa = 0,
+        Fechada = 2
     }
 }

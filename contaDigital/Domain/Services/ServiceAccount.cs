@@ -12,16 +12,21 @@ namespace Domain.Services
 {
     public class ServiceAccount : IServiceAccount
     {
-        private readonly IAccount _IAccount;
+        private readonly Domain.Interfaces.IAccount _IAccount;
 
-        public ServiceAccount(IAccount IAccount)
+        public ServiceAccount(Domain.Interfaces.IAccount IAccount)
         {
             _IAccount = IAccount;
         }
 
-        public async Task<List<Account>> ListAccount()
+        public async Task<List<Account>> ListAccount(string numberAccount, string agency)
         {
-            throw new NotImplementedException();
+            return await _IAccount.ListAccount(x => x.NumberAccount.Equals(numberAccount) && x.Agency.Equals(agency) && x.StatesAccount.Equals(1));
+        }
+
+        public async Task<Boolean> CheckIfAccountExists(string numberAccount)
+        {
+            return await _IAccount.CheckIfAccountExists(x => x.NumberAccount.Equals(numberAccount));
         }
 
         public Task SetAccountBalance(Account account)

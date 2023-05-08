@@ -1,4 +1,6 @@
 ﻿using Application.Interface;
+using Domain.Interfaces;
+using Domain.Interfaces.InterfacesServices;
 using Entity.Entity;
 using System;
 using System.Collections.Generic;
@@ -10,44 +12,53 @@ namespace Application.Application
 {
     public class ApplicationClient : IApplicationClient
     {
-        public Task del(Client Objeto)
+        IClient _IClient;
+        IServiceClient _IServiceClient;
+
+        public ApplicationClient(IClient IClient, IServiceClient IServiceClient)
         {
-            throw new NotImplementedException();
+            _IClient = IClient;
+            _IServiceClient = IServiceClient;
         }
 
-        public Task<List<Client>> List()
+        public async Task del(Client Objeto)
         {
-            throw new NotImplementedException();
+            await _IClient.del(Objeto);
         }
 
-        public Task<List<Client>> ListClientEnable()
+        public async Task<List<Client>> List()
         {
-            throw new NotImplementedException();
+            return await _IClient.List();
         }
 
-        public Task put(Client Objeto)
+        public async Task<List<Client>> ListClientEnable()
         {
-            throw new NotImplementedException();
+            return await _IServiceClient.ListClientEnable();
         }
 
-        public Task putClient(Client client)
+        public async Task put(Client Objeto)
         {
-            throw new NotImplementedException();
+            await _IClient.put(Objeto);
         }
 
-        public Task<Client> searchByID(int Id)
+        public async Task putClient(Client client)
         {
-            throw new NotImplementedException();
+            await _IServiceClient.putClient(client);
         }
 
-        public Task set(Client Objeto)
+        public async Task<Client> searchByID(int Id)
         {
-            throw new NotImplementedException();
+            return await _IClient.searchByID(Id);
         }
 
-        public Task SetClient(Client client)
+        public async Task set(Client Objeto)
         {
-            throw new NotImplementedException();
+            await _IClient.set(Objeto);
+        }
+
+        public async Task SetClient(Client client)
+        {
+            await _IServiceClient.SetClient(client);
         }
     }
 }

@@ -12,6 +12,6 @@ namespace Domain.Interfaces.InterfacesServices
         Task SetAccountBalance(Account account);        
         Task WithdrawAccountBanlance(Account accocunt, decimal value);
         Task getBalance(Account accocunt);
-        Task<List<Account>> ListAccount();
+        Task<List<Account>> ListAccount(string numberAccount, string agency);
     }
 }

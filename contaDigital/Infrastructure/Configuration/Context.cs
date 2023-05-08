@@ -1,6 +1,7 @@
 ﻿using Entity.Entity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -30,7 +31,12 @@ namespace Infrastructure.Configuration
         {
             if (!optionsBuilder.IsConfigured)
             {
-                optionsBuilder.UseSqlServer(GetStringConn());
+                IConfigurationRoot configuration = new ConfigurationBuilder()
+                .SetBasePath(Directory.GetCurrentDirectory())
+                .AddJsonFile("appsettings.json")
+                .Build();
+                string strConn = configuration.GetConnectionString("DefaultConnection");
+                optionsBuilder.UseSqlServer(strConn);
                 base.OnConfiguring(optionsBuilder);
             }
         }
@@ -38,11 +44,6 @@ namespace Infrastructure.Configuration
         public DbSet<Client> Clients { get; set; }
         public DbSet<Account> Accounts { get; set; }
         public DbSet<ApplicationUser> ApplicationUser { get; set; }
-
-        public string GetStringConn()
-        {
-            return "Data Source=DESKTOP-4GIQV0F;Initial Catalog=ContaDigital;Integrated Security=True;encrypt=false";
-        }
 
      }
 }

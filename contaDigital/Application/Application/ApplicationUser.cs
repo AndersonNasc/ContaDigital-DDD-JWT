@@ -22,6 +22,11 @@ namespace Application.Application
             return await _IUser.CheckIfUserExists(email, password);
         }
 
+        public async Task<string> ReturnIdUser(string email)
+        {
+            return await _IUser.ReturnIdUser(email);
+        }
+
         public async Task<bool> SetUser(string email, string password, int Age, string phone)
         {
             return await _IUser.SetUser(email, password, Age, phone);

@@ -10,5 +10,9 @@ namespace Application.Interface
 {
     public interface IApplicationAccount : IApplicationGenerecs<Account>
     {
+        Task<List<Account>> ListAccount();
+        Task SetAccountBalance(Account account);
+        Task WithdrawAccountBanlance(Account accocunt, decimal value);
+        Task<Boolean> CheckIfAccountExists(string account);
     }
 }
